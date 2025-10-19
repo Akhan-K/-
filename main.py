@@ -1,85 +1,59 @@
-print("=== Expenses input ===")
-name = input("Name: ")
-amount = float(input("Amount (tg): "))
-cat = input("Category: ")
+print("=== F1nance ===")
 
-print(f"\nName: {name}")
-print(f"Amount: {amount} tg")
-print(f"Category: {cat}")
-print(f"Amount > 0? {amount > 0}")
+user = input("Name: ").strip()
+budget = float(input("Budget: "))
+cat = input("Category: ").lower()
+spent = float(input("Spent: "))
 
-print("\n=== Expenses list ===")
-items = []
-cats = []
+left = budget - spent
+over = spent > budget
 
-n = int(input("How many expenses? "))
-for i in range(n):
-    t = input(f"{i+1} name: ")
-    s = float(input(f"{i+1} amount: "))
-    c = input(f"{i+1} category: ")
-    items.append({"name": t, "sum": s, "cat": c})
-    cats.append(c)
+print(f"\n{user}, spent {spent} on {cat}")
+print(f"Left: {left:.2f}")
+print("Over budget!" if over else "OK")
 
-uniq_cats = set(cats)
-print(f"\nAll: {cats}")
-print(f"Unique: {list(uniq_cats)}")
+exp = [
+    {"u": "Anna", "c": "food", "a": 1200},
+    {"u": "Boris", "c": "transport", "a": 800},
+    {"u": user, "c": cat, "a": spent}
+]
 
-budget = ("tg", 100000)
-print(f"\nBudget: {budget}")
+cats = {x["c"] for x in exp}
+print("\nCats:", ", ".join(cats))
 
-print("\n=== Search ===")
-q = input("Search name: ").lower()
-found = False
+fixed = ("food", "transport", "fun", "clothes", "health")
 
-for x in items:
-    if q in x["name"].lower():
-        print(f"Found: {x['name']} — {x['sum']} tg ({x['cat']})")
-        found = True
-if not found:
-    print("Not found")
+find = input("\nSearch cat: ").lower().strip()
+print("Found" if find in cats else "No such cat")
 
-print("\n=== Dict & menu ===")
-exp = {}
-for x in items:
-    exp.setdefault(x["cat"], []).append(x["sum"])
+note = input("Note: ").replace(",", ";").strip()
+print("Words:", note.split())
 
-print("\nDict:")
-for c, lst in exp.items():
-    print(f"{c}: {lst} -> total: {sum(lst)} tg")
+pts = {"Anna": 150, "Boris": 90, user: 0}
+if not over:
+    pts[user] += 10
+    print("Got +10 pts")
+
+print("\nLeaders:")
+for u, p in pts.items():
+    print(f"{u}: {p}")
 
 while True:
-    print("\nMenu:")
-    print("1 Add")
-    print("2 Show all")
-    print("3 Total by category")
-    print("4 Exit")
-
-    ch = input("Choose: ")
+    print("\n1 Add  2 Cats  3 Leaders  4 Exit")
+    ch = input("Choice: ").strip()
 
     if ch == "1":
-        t = input("Name: ")
-        s = float(input("Amount: "))
-        c = input("Category: ")
-        items.append({"name": t, "sum": s, "cat": c})
-        exp.setdefault(c, []).append(s)
+        c = input("Cat: ").lower()
+        a = float(input("Amt: "))
+        exp.append({"u": user, "c": c, "a": a})
         print("Added")
-
     elif ch == "2":
-        if not items:
-            print("Empty")
-        else:
-            for x in items:
-                print(f"- {x['name']}: {x['sum']} tg ({x['cat']})")
-
+        print(", ".join({x["c"] for x in exp}))
     elif ch == "3":
-        c = input("Category: ")
-        if c in exp:
-            print(f"{c} total: {sum(exp[c])} tg")
-        else:
-            print("No such category")
-
+        for u, p in pts.items():
+            print(f"{u}: {p}")
     elif ch == "4":
-        print("Exit")
+        print("Bye")
         break
     else:
-        print("Wrong choice")
+        print("Err")
