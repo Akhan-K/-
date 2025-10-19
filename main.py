@@ -1,104 +1,85 @@
-# 1.1 Айнымалылар мен типтерді қолдану
-print("=== 1.1. Шығындарды енгізу ===")
-аты = input("Шығын атауын енгізіңіз: ")
-сома = float(input("Соманы енгізіңіз (теңге): "))
-категория = input("Категорияны енгізіңіз (мысалы: тамақ, киім, көлік): ")
+print("=== Expenses input ===")
+name = input("Name: ")
+amount = float(input("Amount (tg): "))
+cat = input("Category: ")
 
-# Арифметикалық және логикалық операторлар
-жеткілікті_баға = сома > 0
-print(f"\nЕнгізілген шығын: {аты}")
-print(f"Сома: {сома} теңге")
-print(f"Категория: {категория}")
-print(f"Сома оң ма? {жеткілікті_баға}")
+print(f"\nName: {name}")
+print(f"Amount: {amount} tg")
+print(f"Category: {cat}")
+print(f"Amount > 0? {amount > 0}")
 
-# 1.2 Күрделі деректер типтері
-print("\n=== 1.2. Шығындар тізімі мен қайталанбауын қамтамасыз ету ===")
-шығындар_тізімі = []
-категориялар_тізімі = []
+print("\n=== Expenses list ===")
+items = []
+cats = []
 
-# Пайдаланушыдан бірнеше шығын енгізу
-n = int(input("Қанша шығын енгізгіңіз келеді? "))
+n = int(input("How many expenses? "))
 for i in range(n):
-    атау = input(f"{i+1}-шы шығын атауы: ")
-    сома = float(input(f"{i+1}-ші шығын сомасы: "))
-    кат = input(f"{i+1}-ші шығын категориясы: ")
-    шығындар_тізімі.append({"атау": атау, "сома": сома, "категория": кат})
-    категориялар_тізімі.append(кат)
+    t = input(f"{i+1} name: ")
+    s = float(input(f"{i+1} amount: "))
+    c = input(f"{i+1} category: ")
+    items.append({"name": t, "sum": s, "cat": c})
+    cats.append(c)
 
-# Жиын арқылы қайталанатын категорияларды жою
-уникалды_категориялар = set(категориялар_тізімі)
-print(f"\nБарлық енгізілген категориялар: {категориялар_тізімі}")
-print(f"Қайталанбайтын категориялар: {list(уникалды_категориялар)}")
+uniq_cats = set(cats)
+print(f"\nAll: {cats}")
+print(f"Unique: {list(uniq_cats)}")
 
-# Кортеж арқылы өзгермейтін деректер (мысалы, валюта немесе бюджет шегі)
-бюджет_ақпараты = ("Теңге", 100000)  # (валюта, максималды бюджет)
-print(f"\nБюджет ақпараты (кортеж): {бюджет_ақпараты}")
+budget = ("tg", 100000)
+print(f"\nBudget: {budget}")
 
-# 1.3 Мәтіндік деректер мен логикалық шешім қабылдау
-print("\n=== 1.3. Өнім/шығын атауын іздеу ===")
-іздеу_сөзі = input("Іздеу үшін шығын атауын енгізіңіз: ").lower()
+print("\n=== Search ===")
+q = input("Search name: ").lower()
+found = False
 
-табылды = False
-for шығын in шығындар_тізімі:
-    if іздеу_сөзі in шығын["атау"].lower():
-        print(f"Табылды: {шығын['атау']} — {шығын['сома']} теңге ({шығын['категория']})")
-        табылды = True
+for x in items:
+    if q in x["name"].lower():
+        print(f"Found: {x['name']} — {x['sum']} tg ({x['cat']})")
+        found = True
+if not found:
+    print("Not found")
 
-if not табылды:
-    print("Сәйкес шығын табылмады.")
+print("\n=== Dict & menu ===")
+exp = {}
+for x in items:
+    exp.setdefault(x["cat"], []).append(x["sum"])
 
-# 1.4 Көп өлшемді құрылымдар және қайталанатын әрекеттер
-print("\n=== 1.4. Шығындар сөздігі және мәзір ===")
+print("\nDict:")
+for c, lst in exp.items():
+    print(f"{c}: {lst} -> total: {sum(lst)} tg")
 
-# Сөздік түрінде сақтау: категория -> [сомалар]
-шығындар_сөздігі = {}
-for шығын in шығындар_тізімі:
-    кат = шығын["категория"]
-    if кат not in шығындар_сөздігі:
-        шығындар_сөздігі[кат] = []
-    шығындар_сөздігі[кат].append(шығын["сома"])
-
-# for циклі арқылы барлық шығындарды шығару
-print("\nШығындар сөздігі:")
-for кат, сомалар in шығындар_сөздігі.items():
-    жалпы = sum(сомалар)
-    print(f"{кат}: {сомалар} → Жалпы: {жалпы} теңге")
-
-# while циклі арқылы мәзір
 while True:
-    print("\nМәзір:")
-    print("1. Жаңа шығын қосу")
-    print("2. Барлық шығындарды көру")
-    print("3. Категория бойынша жалпы соманы көру")
-    print("4. Шығу")
-    
-    таңдау = input("Таңдаңыз (1-4): ")
-    
-    if таңдау == "1":
-        атау = input("Жаңа шығын атауы: ")
-        сома = float(input("Сома: "))
-        кат = input("Категория: ")
-        шығындар_тізімі.append({"атау": атау, "сома": сома, "категория": кат})
-        print("Шығын қосылды!")
-    
-    elif таңдау == "2":
-        if not шығындар_тізімі:
-            print("Әзірше шығын жоқ.")
+    print("\nMenu:")
+    print("1 Add")
+    print("2 Show all")
+    print("3 Total by category")
+    print("4 Exit")
+
+    ch = input("Choose: ")
+
+    if ch == "1":
+        t = input("Name: ")
+        s = float(input("Amount: "))
+        c = input("Category: ")
+        items.append({"name": t, "sum": s, "cat": c})
+        exp.setdefault(c, []).append(s)
+        print("Added")
+
+    elif ch == "2":
+        if not items:
+            print("Empty")
         else:
-            for ш in шығындар_тізімі:
-                print(f"- {ш['атау']}: {ш['сома']} теңге ({ш['категория']})")
-    
-    elif таңдау == "3":
-        кат = input("Категорияны енгізіңіз: ")
-        if кат in шығындар_сөздігі:
-            жалпы = sum(шығындар_сөздігі[кат])
-            print(f"{кат} категориясы бойынша жалпы шығын: {жалпы} теңге")
+            for x in items:
+                print(f"- {x['name']}: {x['sum']} tg ({x['cat']})")
+
+    elif ch == "3":
+        c = input("Category: ")
+        if c in exp:
+            print(f"{c} total: {sum(exp[c])} tg")
         else:
-            print("Бұл категорияда шығын жоқ.")
-    
-    elif таңдау == "4":
-        print("Қосымшадан шығу...")
+            print("No such category")
+
+    elif ch == "4":
+        print("Exit")
         break
-    
     else:
-        print("Қате таңдау! 1-ден 4-ке дейінгі санды енгізіңіз.")
+        print("Wrong choice")
