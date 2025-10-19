@@ -1,59 +1,62 @@
-print("=== F1nance ===")
+print("=== All Finance ===")
 
-user = input("Name: ").strip()
-budget = float(input("Budget: "))
-cat = input("Category: ").lower()
-spent = float(input("Spent: "))
+users = []
+family = {"deposit": 0}
+deps = ("еда", "транспорт", "развлечения", "одежда")
 
-left = budget - spent
-over = spent > budget
+def add_user():
+    login = input("login: ").strip()
+    name = input("name: ").strip()
+    budget = float(input("your budget: "))
+    users.append({"login": login, "name": name, "bal": budget, "spent": 0, "income": 0})
+    print(f"{name} added with {budget}₸")
 
-print(f"\n{user}, spent {spent} on {cat}")
-print(f"Left: {left:.2f}")
-print("Over budget!" if over else "OK")
+def show_users():
+    for i, u in enumerate(users):
+        print(f"{i+1}. {u['name']} | balance:{u['bal']}₸ | spent:{u['spent']}₸ | income:{u.get('income', 0)}₸")
 
-exp = [
-    {"u": "Anna", "c": "food", "a": 1200},
-    {"u": "Boris", "c": "transport", "a": 800},
-    {"u": user, "c": cat, "a": spent}
-]
+add_user()
 
-cats = {x["c"] for x in exp}
-print("\nCats:", ", ".join(cats))
+dep = input("deposit name: ").lower().strip()
+if dep not in deps:
+    print("new deposit added")
+else:
+    print("deposit found:", dep)
 
-fixed = ("food", "transport", "fun", "clothes", "health")
-
-find = input("\nSearch cat: ").lower().strip()
-print("Found" if find in cats else "No such cat")
-
-note = input("Note: ").replace(",", ";").strip()
-print("Words:", note.split())
-
-pts = {"Anna": 150, "Boris": 90, user: 0}
-if not over:
-    pts[user] += 10
-    print("Got +10 pts")
-
-print("\nLeaders:")
-for u, p in pts.items():
-    print(f"{u}: {p}")
-
-while True:
-    print("\n1 Add  2 Cats  3 Leaders  4 Exit")
-    ch = input("Choice: ").strip()
-
-    if ch == "1":
-        c = input("Cat: ").lower()
-        a = float(input("Amt: "))
-        exp.append({"u": user, "c": c, "a": a})
-        print("Added")
-    elif ch == "2":
-        print(", ".join({x["c"] for x in exp}))
-    elif ch == "3":
-        for u, p in pts.items():
-            print(f"{u}: {p}")
-    elif ch == "4":
-        print("Bye")
-        break
+menu = True
+while menu:
+    print("\n1 add user\n2 add expense\n3 add income\n4 family add\n5 show all\n6 exit")
+    c = input("-> ").strip()
+    if c == "1":
+        add_user()
+    elif c == "2":
+        if not users:
+            print("no users")
+            continue
+        show_users()
+        i = int(input("user num: ")) - 1
+        amt = float(input("spent: "))
+        users[i]["spent"] += amt
+        users[i]["bal"] -= amt
+        print(f"spent {amt}₸, left {users[i]['bal']}₸")
+    elif c == "3":
+        show_users()
+        i = int(input("user num: ")) - 1
+        inc = float(input("income: "))
+        users[i]["bal"] += inc
+        users[i]["income"] += inc
+        print(f"added {inc}₸, now {users[i]['bal']}₸")
+    elif c == "4":
+        show_users()
+        i = int(input("user num: ")) - 1
+        fam = float(input("add to family: "))
+        family["deposit"] += fam
+        users[i]["bal"] -= fam
+        print(f"family +{fam}₸ by {users[i]['name']}, total {family['deposit']}₸")
+    elif c == "5":
+        show_users()
+        print(f"family deposit: {family['deposit']}₸")
+    elif c == "6":
+        menu = False
     else:
-        print("Err")
+        print("err")
