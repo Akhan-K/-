@@ -222,13 +222,59 @@ def transfer_between_users():
     receiver.bal += amt
     print(f"{amt}₸ translated from {sender.name} to {receiver.name}")
 
+# === ГРАФИК ЭКОНОМИКИ ===
+import numpy as np
+import matplotlib.pyplot as plt
+
+def plot_user_economy(fm):
+    if not fm.users:
+        print("Пользователи отсутствуют.")
+        return
+
+
+    max_months = max(len(u.monthly_incomes) for u in fm.users)
+
+    months = np.array([
+        "Қаңтар", "Ақпан", "Наурыз", "Сәуір",
+        "Мамыр", "Маусым", "Шілде", "Тамыз",
+        "Қыркүйек", "Қазан", "Қараша", "Желтоқсан"
+    ])[:max_months]
+
+
+    all_incomes = np.zeros(max_months)
+    all_expenses = np.zeros(max_months)
+
+    for user in fm.users:
+        user_incomes = np.array(user.monthly_incomes + [0] * (max_months - len(user.monthly_incomes)))
+        user_expenses = np.array(user.monthly_expenses + [0] * (max_months - len(user.monthly_expenses)))
+        all_incomes += user_incomes
+        all_expenses += user_expenses
+
+    avg_income = np.mean(all_incomes)
+    avg_expenses = np.mean(all_expenses)
+
+    print(f"Орташа айлық пополнение: {avg_income:.2f} ₸")
+    print(f"Орташа айлық шығын: {avg_expenses:.2f} ₸")
+
+    plt.figure(figsize=(10, 5))
+    plt.plot(months, all_incomes, marker='o', linewidth=2, label="Пополнение")
+    plt.plot(months, all_expenses, marker='s', linewidth=2, label="Расходы")
+    plt.title("Айлар бойынша барлық пайдаланушылардың финансы")
+    plt.xlabel("Айлар")
+    plt.ylabel("Сумма (₸)")
+    plt.grid(True, linestyle='--', alpha=0.6)
+    plt.legend()
+    plt.tight_layout()
+    plt.show()
+
+
 # === НАЧАЛО ===
 load_data()
 
 # === МЕНЮ ===
 menu = True
 while menu:
-    print("\n1 add user\n2 add expense\n3 add income\n4 open family account\n5 add family member\n6 add family funds\n7 transfer between users\n8 show all\n9 search\n10 delete\n11 save\n12 load\n13 exit")
+    print("\n1 add user\n2 add expense\n3 add income\n4 open family account\n5 add family member\n6 add family funds\n7 transfer between users\n8 show all\n9 search\n10 delete\n11 save\n12 load\n13 economic graph\n14 exit")
     c = input("-> ").strip()
     if c == "1":
         add_user()
@@ -254,7 +300,9 @@ while menu:
         save_data()
     elif c == "12":
         load_data()
-    elif c == "13":
+     elif c == "13":
+        plot_user_economy(fm)
+    elif c == "14":
         save_data()
         menu = False
     else:
