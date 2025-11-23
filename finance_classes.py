@@ -5,7 +5,9 @@ class User:
         self.bal = float(budget)
         self.spent = 0
         self.income = 0
-
+        self.monthly_expenses = [0]
+        self.monthly_incomes = [0]
+        
     def add_expense(self, amount):
         if amount > self.bal:
             return False
