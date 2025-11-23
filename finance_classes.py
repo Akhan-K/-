@@ -13,11 +13,13 @@ class User:
             return False
         self.spent += amount
         self.bal -= amount
+        self.monthly_expenses.append(amount)
         return True
 
     def add_income(self, amount):
         self.bal += amount
         self.income += amount
+        self.monthly_incomes.append(amount)
         return True
 
     def get_info(self):
